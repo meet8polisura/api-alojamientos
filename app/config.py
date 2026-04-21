@@ -1,27 +1,29 @@
-import os 
+import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
+
 class Config:
     """Configuracion central de la aplicacion."""
+
     # docstring
 
-    SQLALCHEMY_TRACK_MODIFICATIONS= False
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    SECRET_KEY= os.getenv("SECRET_KEY")
-    _jwt_exp= os.getenv("JWT_EXP_MINUTES", "15")
+    SECRET_KEY = os.getenv("SECRET_KEY")
+    _jwt_exp = os.getenv("JWT_EXP_MINUTES", "15")
 
-    JWT_EXP_MINUTES= int(_jwt_exp) if _jwt_exp.isdigit() else 15
+    JWT_EXP_MINUTES = int(_jwt_exp) if _jwt_exp.isdigit() else 15
 
-    _db_user= os.getenv("DB_USER", "").strip()
-    _db_password= os.getenv("DB_PASSWORD", "").strip()
-    _db_host= os.getenv("DB_HOST", "localhost").strip()
-    _db_port= os.getenv("DB_PORT", "3306").strip()
-    _db_name= os.getenv("DB_NAME", "").strip()
+    _db_user = os.getenv("DB_USER", "").strip()
+    _db_password = os.getenv("DB_PASSWORD", "").strip()
+    _db_host = os.getenv("DB_HOST", "localhost").strip()
+    _db_port = os.getenv("DB_PORT", "3306").strip()
+    _db_name = os.getenv("DB_NAME", "").strip()
 
     # motor+drive://usuario:password@host:puerto/nombre_db
-    SQLALCHEMY_DATABASE_URI= (
+    SQLALCHEMY_DATABASE_URI = (
         f"mysql+pymysql://{_db_user}:{_db_password}@{_db_host}:{_db_port}/{_db_name}"
     )
 
@@ -40,7 +42,6 @@ class Config:
         if not SECRET_KEY:
             SECRET_KEY = "test-key-for-pytest"
 
-
     _origins_env = os.getenv("CORS_ALLOWED_ORIGINS", "")
     if _origins_env:
         CORS_ALLOWED_ORIGINS = [o.strip() for o in _origins_env.split(",") if o.strip()]
@@ -53,4 +54,4 @@ class Config:
         ]
 
     BASE_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
-    #raiz del proyecto
+    # raiz del proyecto
