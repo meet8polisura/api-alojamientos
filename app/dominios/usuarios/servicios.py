@@ -22,6 +22,9 @@ class UsuarioNoEncontradoError(Exception):
     pass
 
 
+class PermisoDenegadoError(Exception):
+    pass
+
 # --- Funciones auxiliares de JWT ---
 
 def _generar_access_token(usuario, secret_key, exp_minutes):
@@ -97,7 +100,7 @@ class UsuarioServicio:
         perfil = UsuarioRepositorio.obtener_perfil_por_usuario_id(usuario_id)
 
         if not perfil:
-            return None
+            return UsuarioNoEncontradoError('Perfil no encontrado.')
         
         return perfil.to_dict()
 
@@ -123,3 +126,23 @@ class UsuarioServicio:
         UsuarioRepositorio.guardar_perfil(perfil)
         
         return perfil.to_dict()
+    
+    def listar_todos_los_usuarios(self):
+        """Devuelve lista de todos los usuarios sin datos sensibles."""
+        usuarios = UsuarioRepositorio.listar_todos()
+
+        return [u.to_dict() for u in usuarios]  
+    
+    
+    def promover_a_admin(self, correo):
+        """Promueve al usuario con el correo dado a rol admin."""
+        usuario = UsuarioRepositorio.obtener_por_correo(correo)
+
+        if not usuario:
+            raise UsuarioNoEncontradoError(f'No se encontro ningun usuario con correo {correo}.')
+        
+        usuario.rol = 'admin'
+
+        UsuarioRepositorio.actualizar_usuario()
+        
+        return usuario
